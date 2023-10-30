@@ -1,15 +1,10 @@
 const express = require("express");
+const {signup,login} = require("../Controller/user");
 
 const router = express.Router();
 
 
-router.get('/',(req, res) => {
-	const data = 'bimbo';
-	res.status(200).json({
-		'status':true,
-		'data':`${data}`,
-		'message':"Signup Successfully"
-	})
-})
+router.get('/', signup);
+router.post('/login', login);
 
 module.exports = router;

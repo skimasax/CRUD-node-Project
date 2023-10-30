@@ -6,10 +6,11 @@ const app = express();
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 
-const userRoute = require('./routes/user');
+const authRoute = require('./routes/authRoute');
+const profileRoute = require('./routes/profileRoute');
 
 //create your routes
-app.use('/api/v1/user', userRoute); 
+app.use('/api/v1/user', authRoute); 
 
 
 

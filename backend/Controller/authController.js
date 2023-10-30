@@ -1,7 +1,8 @@
 const bcrypt = require('bcryptjs');
+const User = require('../Model/UserModel');
 
 const signup = async (req, res) => {
-    const { firstname, lastname,email, password, confirm_password } = req.body;
+    const { firstname, lastname, email, password, confirm_password, gender, country } = req.body;
 
     // Check if password and confirm_password match
     if (password !== confirm_password) {
@@ -16,26 +17,26 @@ const signup = async (req, res) => {
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-        // Store the user data with the hashed password in your database
-        // Here, you would typically save the 'hashedPassword' along with other user data
-
-        const data = {
+        // Create a new user document and save it to the database
+        const newUser = new User({
             firstname: firstname,
             lastname: lastname,
-			email: email,
-			password: hashedPassword,
-            // Do not store the plain text password; store the hashed password
-        };
+            email: email,
+            gender: gender,
+            country: country,
+            password: hashedPassword // Store the hashed password
+        });
 
+        await newUser.save();
 
         res.status(200).json({
             status: true,
-            data: data, // You should not include the password in the response
+            data: newUser, // You can include the saved user data
             message: "Signup Successfully"
         });
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({
+        res.status(400).json({
             status: false,
             message: 'An error occurred during registration'
         });
@@ -43,8 +44,42 @@ const signup = async (req, res) => {
 }
 
 const login = async(req, res) => {
+    // Implement your login logic here
+    const { email, password } = req.body;
+    
+User.findOne({ email: email }, (err, user) => {
+    if (err) {
+        // Handle the error
+    } else {
+        if (user) {
+            const userPassword = user.password;
+            //compare the password
+            bcrypt.compare(plaintextPassword, user.password, (err, isMatch) => {
+                if (err) {
+                    // Handle the error
+                } else {
+                    if (isMatch) {
+                        // Passwords match
+                    } else {
+                        // Passwords don't match
+                    }
+                }
+            });
+            
+            
+            
+            
+            
+            
+            
+        } else {
+            // User not found
+        }
+    }
+});
+
+    //compare if the password match
 
 }
 
-
-module.exports = {signup, login}
+module.exports = { signup, login };

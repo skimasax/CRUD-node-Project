@@ -14,11 +14,10 @@ const signup = async (req, res) => {
 
     try {
         // Generate a salt and hash the password
-        const saltRounds = 10;
-        const hashedPassword = await bcrypt.hash(password, saltRounds);
+        const hashedPassword = await bcrypt.hash(password, 10);
 
         // Create a new user document and save it to the database
-        const newUser = new User({
+        const newUser = await User.create({
             firstname: firstname,
             lastname: lastname,
             email: email,
@@ -27,59 +26,56 @@ const signup = async (req, res) => {
             password: hashedPassword // Store the hashed password
         });
 
-        await newUser.save();
+        // await newUser.save();
+       
 
-        res.status(200).json({
+        return res.status(200).json({
             status: true,
             data: newUser, // You can include the saved user data
             message: "Signup Successfully"
         });
     } catch (error) {
         console.error('Error:', error);
-        res.status(400).json({
+       return res.status(400).json({
             status: false,
-            message: 'An error occurred during registration'
+            message: error
         });
     }
 }
+
+
 
 const login = async(req, res) => {
     // Implement your login logic here
     const { email, password } = req.body;
     
-User.findOne({ email: email }, (err, user) => {
-    if (err) {
-        // Handle the error
-    } else {
-        if (user) {
-            const userPassword = user.password;
-            //compare the password
-            bcrypt.compare(plaintextPassword, user.password, (err, isMatch) => {
-                if (err) {
-                    // Handle the error
-                } else {
-                    if (isMatch) {
-                        // Passwords match
-                    } else {
-                        // Passwords don't match
-                    }
-                }
-            });
-            
-            
-            
-            
-            
-            
-            
-        } else {
-            // User not found
-        }
-    }
+const user = await  User.findOne({email: email }).select("+password");
+
+if(!user){
+    throw error
+}
+
+const UserPassword = user.password;
+
+const check = await bcrypt.compare(password,UserPassword);
+if(!check)
+{
+   return res.status(422).json({
+        'status':true,
+        'message':'Password do not match'
+    });
+}
+
+user.password = undefined;
+
+return res.status(200).json({
+    'status':true,
+    'data':user,
+    'message':'Login Successfully'
 });
 
-    //compare if the password match
 
 }
+
 
 module.exports = { signup, login };

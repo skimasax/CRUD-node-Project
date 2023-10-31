@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const User = require('../Model/UserModel');
+const userService = require('../Service/UserService');
 
 const signup = async (req, res) => {
     const { firstname, lastname, email, password, confirm_password, gender, country } = req.body;
@@ -9,6 +10,17 @@ const signup = async (req, res) => {
         return res.status(422).json({
             status: false,
             message: "Password do not match"
+        });
+    }
+
+    //check if email already exist
+    const user = await userService.findUserByEmail(email);
+
+    if(user)
+    {
+        return res.status(422).json({
+            status: false,
+            message: "Email already exist"
         });
     }
 

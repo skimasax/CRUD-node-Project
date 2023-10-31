@@ -7,6 +7,11 @@ const findUserById = async(id) => {
     return user;
 }
 
+const findUserByEmail = async(email) => {
+    const user = await User.findOne({email:email})
+    return user;
+}
+
 const getAllUser = async() => {
     const users = await User.find({})
     return users;
@@ -17,9 +22,9 @@ const deleteUserById = async(id) => {
     if(!user){
         return ('User not found')
     }
-    
+
     return 'Deleted Successfully';
 }
 
 
-module.exports = {findUserById, getAllUser, deleteUserById};
+module.exports = {findUserById, getAllUser, deleteUserById, findUserByEmail};

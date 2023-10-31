@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const User = require('../Model/UserModel');
 const userService = require('../Service/UserService');
+const walletService = require('../Service/WalletService');
 const cryptoToken = require("../Config/token");
 
 const signup = async (req, res) => {
@@ -39,14 +40,16 @@ const signup = async (req, res) => {
             password: hashedPassword // Store the hashed password
         });
 
-        // await newUser.save();
-
        
+        // await newUser.save();
+        //create a wallet for the user
+        const wallet = await walletService.createWalletOnRegistration(newUser._id);
+        const userWallet = await walletService.getUserWallet(newUser._id);
 
         return res.status(200).json({
             status: true,
             data: newUser,
-            token,// You can include the saved user data
+            wallet: userWallet,// You can include the saved user data
             message: "Signup Successfully"
         });
     } catch (error) {

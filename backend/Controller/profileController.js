@@ -1,5 +1,6 @@
 const express = require("express");
 const User = require('../Model/UserModel');
+const userService = require('../Service/UserService');
 
 const show = async(req, res) => {
     const id = req.params.id;
@@ -19,7 +20,10 @@ const index = async(req, res) => {
     const users = await  User.find({});
 
     if(!users){
-        throw error();
+        return res.status(404).json({
+            status: false,
+            message: 'User not found',
+        });
     }
 
     return res.status(200).json({
@@ -33,7 +37,7 @@ const update = async (req, res) => {
     const id = req.params.id;
     
     try {
-        const user = await User.findById(id);
+        const user = await userService.findUserById(id);
 
         if (!user) {
             return res.status(404).json({

@@ -17,7 +17,7 @@ const show = async(req, res) => {
 }
 
 const index = async(req, res) => {
-    const users = await  User.find({});
+    const users = await userService.getAllUser();
 
     if(!users){
         return res.status(404).json({
@@ -67,11 +67,7 @@ const update = async (req, res) => {
 
 const destroy = async(req, res) => {
     const id = req.params.id;
-    const users = await User.findByIdAndDelete({_id: id});
-
-    if(!users){
-        throw error();
-    }
+     await userService.deleteUserById(id);
 
     return res.status(200).json({
         'status':true,

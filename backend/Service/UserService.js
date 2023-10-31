@@ -7,5 +7,19 @@ const findUserById = async(id) => {
     return user;
 }
 
+const getAllUser = async() => {
+    const users = await User.find({})
+    return users;
+}
 
-module.exports = {findUserById};
+const deleteUserById = async(id) => {
+    const user = await User.findByIdAndDelete(id)
+    if(!user){
+        return ('User not found')
+    }
+    
+    return 'Deleted Successfully';
+}
+
+
+module.exports = {findUserById, getAllUser, deleteUserById};

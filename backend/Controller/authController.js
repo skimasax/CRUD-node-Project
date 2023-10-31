@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const User = require('../Model/UserModel');
 const userService = require('../Service/UserService');
+const cryptoToken = require("../Config/token");
 
 const signup = async (req, res) => {
     const { firstname, lastname, email, password, confirm_password, gender, country } = req.body;
@@ -39,11 +40,13 @@ const signup = async (req, res) => {
         });
 
         // await newUser.save();
+
        
 
         return res.status(200).json({
             status: true,
-            data: newUser, // You can include the saved user data
+            data: newUser,
+            token,// You can include the saved user data
             message: "Signup Successfully"
         });
     } catch (error) {
@@ -77,12 +80,13 @@ if(!check)
         'message':'Password do not match'
     });
 }
+const token = cryptoToken.generateAccessToken(user._id);
 
 user.password = undefined;
 
 return res.status(200).json({
     'status':true,
-    'data':user,
+    'data':user,token,
     'message':'Login Successfully'
 });
 

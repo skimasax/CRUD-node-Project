@@ -6,10 +6,15 @@ const makePayment = async(req, res) =>{
 
     //send the data to paystack
     const data = await  paystack.initializePayment(amount,email);
+    
        return res.status(200).json({
             'status':true,
-            'data':data
+            'data':data.data.authorization_url
         });
 }
 
-module.exports = {makePayment}
+const seePayment = async(req, res) => {
+    res.send('hello');
+}
+
+module.exports = {makePayment,seePayment}

@@ -1,36 +1,29 @@
 const express = require("express");
-const request = require('request');
+const axios = require('axios');
 const paystack = require("../Config/constant");
 
 const initializePayment = async (amount, email) => {
   try {
-    const options = {
-      method: 'POST',
-      url: paystack.PAYSTACK_BASE_URL+'/initialize',
+    const paystackApiKey = process.env.PAYSTACK_SANDBOX_SECRETKEY; // Replace with your Paystack API key
+    const baseUrl = `${paystack.PAYSTACK_BASE_URL}initialize`;
+    const response = await axios.post(baseUrl, {
+      amount: amount,
+      email: email
+    }, {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer '+process.env.PAYSTACK_SANDBOX_SECRETKEY,
-      },
-      body: JSON.stringify({
-        amount: amount, // Use the amount parameter passed to the function
-        email: email,   // Use the email parameter passed to the function
-      }),
-    };
-
-    request(options, function (error, response, body) {
-      if (error) {
-        console.error('Error:', error);
-        // Handle the error appropriately, e.g., return an error response
-      } else {
-        const result = JSON.parse(body);
-        // Handle the result, e.g., return the result to the client
-        return result;
+        'Authorization': `Bearer ${paystackApiKey}`
       }
     });
+
+    const data = response.data;
+
+    return data;
+    
   } catch (error) {
-    console.error('Error:', error);
-    // Handle any errors that may occur during the request
+    console.error(error);
+    res.status(500).json({ error: 'An error occurred' });
   }
 };
 

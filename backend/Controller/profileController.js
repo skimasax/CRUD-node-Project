@@ -94,4 +94,12 @@ const deleteProfile = async (req, res) => {
     }
 }
 
-module.exports = { showProfile, listProfiles, updateProfile, deleteProfile };
+const updateProfilePicture = async(req, res) => {
+        try {
+            const user = req.user;
+        } catch (error) {
+            
+        }
+}
+
+module.exports = { showProfile, listProfiles, updateProfile, deleteProfile, updateProfilePicture };

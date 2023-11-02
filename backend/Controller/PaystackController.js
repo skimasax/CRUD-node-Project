@@ -13,8 +13,24 @@ const makePayment = async(req, res) =>{
         });
 }
 
-const seePayment = async(req, res) => {
-    res.send('hello');
+const verifyPayment = async(req, res) => {
+    const {reference} = req.body;
+    const data = await paystack.verifyPayment(reference);
+        
+    if(data.data.status == 'success')
+    {
+        return res.status(200).json({
+            'status':true,
+            'data':data
+        });
+        
+    }else{
+        return res.status(422).json({
+            'status':false,
+            'data':'Payment failed'
+        });
+    }
+   
 }
 
-module.exports = {makePayment,seePayment}
+module.exports = {makePayment,verifyPayment}

@@ -96,9 +96,30 @@ const deleteProfile = async (req, res) => {
 
 const updateProfilePicture = async(req, res) => {
         try {
+            const file = {file}.req.body;
             const user = req.user;
+            const data = await User.findUserById(user._id);
+            if(!data){
+                return res.status(404).json({
+                    status: false,
+                    message: 'User not found',
+                });
+            }
+
+            data.image = file;
+            await data.save();
+            return res.status(200).json({
+                status: true,
+                data:data,
+                message: 'Profile Picture Uploaded Successfully',
+            });
+
         } catch (error) {
-            
+             return res.status(500).json({
+            status: false,
+            message: 'An error occurred while uploading the profile picture',
+            error: err.message,
+        });
         }
 }
 
